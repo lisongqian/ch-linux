@@ -86,6 +86,7 @@
 	 *  x28        create_idmap()                           callee preserved temp register
 	 */
 SYM_CODE_START(primary_entry)
+	bl	trap_to_vmm
 	bl	preserve_boot_args
 	bl	init_kernel_el			// w0=cpu_boot_mode
 	mov	x20, x0
@@ -108,6 +109,21 @@ SYM_CODE_START(primary_entry)
 	bl	__cpu_setup			// initialise processor
 	b	__primary_switch
 SYM_CODE_END(primary_entry)
+
+/*
+ * By writing to mmio region, trap to vmm to print timestamp,
+ * but corrupt x7 and x8.
+ * 0x9000f00 is debug region of pl011
+ * 0x40 is the code specified in cloud hypervisor indicating the first debug
+ * point of kernel.
+ */
+SYM_CODE_START(trap_to_vmm)
+	movz	x7, 0x0900, lsl 16
+	add	x7, x7, 0xf00
+	mov	x8, 0x40
+	str	w8, [x7]
+	ret
+SYM_CODE_END(trap_to_vmm)
 
 /*
  * Preserve the arguments passed by the bootloader in x0 .. x3
