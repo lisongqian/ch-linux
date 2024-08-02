@@ -423,7 +423,7 @@ int register_virtio_device(struct virtio_device *dev)
 	err = device_add(&dev->dev);
 	if (err)
 		goto out_of_node_put;
-
+	printk("Register virtio device: %s, bus: %s.", dev_name(&dev->dev), dev_bus_name(&dev->dev));
 	return 0;
 
 out_of_node_put:

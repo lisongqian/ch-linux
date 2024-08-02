@@ -687,6 +687,9 @@ static int vm_cmdline_set(const char *device,
 
 	if (!vm_cmdline_parent_registered) {
 		err = device_register(&vm_cmdline_parent);
+		printk("Registering virtio-mmio-cmdline device: %s, bus: %s",
+		       dev_name(&vm_cmdline_parent),
+		       dev_bus_name(&vm_cmdline_parent));
 		if (err) {
 			pr_err("Failed to register parent device!\n");
 			return err;
@@ -694,7 +697,7 @@ static int vm_cmdline_set(const char *device,
 		vm_cmdline_parent_registered = 1;
 	}
 
-	pr_info("Registering device virtio-mmio.%d at 0x%llx-0x%llx, IRQ %d.\n",
+	printk("Registering device virtio-mmio.%d at 0x%llx-0x%llx, IRQ %d.\n",
 		       vm_cmdline_id,
 		       (unsigned long long)resources[0].start,
 		       (unsigned long long)resources[0].end,
