@@ -706,6 +706,24 @@ int platform_device_add(struct platform_device *pdev)
 		}
 	}
 
+	{
+		printk("Registering pdev %s.%d", pdev->name, pdev->id);
+		u32 j;
+		for (j = 0; j < pdev->num_resources; ++j) {
+			switch (pdev->resource[j].flags) {
+			case IORESOURCE_MEM:
+				printk("   mem at 0x%llx-0x%llx",
+				       (unsigned long long)pdev->resource[0].start,
+				       (unsigned long long)pdev->resource[0].end);
+				break;
+			case IORESOURCE_IRQ:
+				printk("   IRQ %d",(int)pdev->resource[1].start);
+				break;
+			default:
+				break;
+			}
+		}
+	}
 	pr_debug("Registering platform device '%s'. Parent at %s\n",
 		 dev_name(&pdev->dev), dev_name(pdev->dev.parent));
 
