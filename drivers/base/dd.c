@@ -532,6 +532,8 @@ static int call_driver_probe(struct device *dev, struct device_driver *drv)
 		/* driver matched but the probe failed */
 		pr_warn("%s: probe of %s failed with error %d\n",
 			drv->name, dev_name(dev), ret);
+		// print probe stack
+		dump_stack();
 		break;
 	}
 
