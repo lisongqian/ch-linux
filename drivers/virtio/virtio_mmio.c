@@ -455,7 +455,8 @@ error_available:
 	return ERR_PTR(err);
 }
 
-static int vm_find_vqs(struct virtio_device *vdev, unsigned nvqs,
+static int vm_find_vqs(struct virtio_device *vdev,	// 当前要操作的设备
+		       unsigned nvqs,			//
 		       struct virtqueue *vqs[],
 		       vq_callback_t *callbacks[],
 		       const char * const names[],
@@ -529,18 +530,18 @@ static bool vm_get_shm_region(struct virtio_device *vdev,
 }
 
 static const struct virtio_config_ops virtio_mmio_config_ops = {
-	.get		= vm_get,
-	.set		= vm_set,
-	.generation	= vm_generation,
-	.get_status	= vm_get_status,
-	.set_status	= vm_set_status,
-	.reset		= vm_reset,
-	.find_vqs	= vm_find_vqs,
-	.del_vqs	= vm_del_vqs,
-	.get_features	= vm_get_features,
-	.finalize_features = vm_finalize_features,
-	.bus_name	= vm_bus_name,
-	.get_shm_region = vm_get_shm_region,
+	.get		= vm_get,		// 获取设备配置空间数据
+	.set		= vm_set,		// 设置设备配置空间数据
+	.generation	= vm_generation,	// 获取设备配置的生成数
+	.get_status	= vm_get_status,	// 获取设备状态
+	.set_status	= vm_set_status,	// 设置设备状态
+	.reset		= vm_reset,		// 复位设备
+	.find_vqs	= vm_find_vqs,		// 查找和分配Virtio queues
+	.del_vqs	= vm_del_vqs,		// 删除所有的Virtio queues
+	.get_features	= vm_get_features,	// 获取设备支持的特性
+	.finalize_features = vm_finalize_features,// 确认设备特性
+	.bus_name	= vm_bus_name,		// 设备总线名
+	.get_shm_region = vm_get_shm_region,	// 获取共享内存区域
 };
 
 
