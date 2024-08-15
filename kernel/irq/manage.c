@@ -2143,7 +2143,7 @@ int request_threaded_irq(unsigned int irq, irq_handler_t handler,
 
 	desc = irq_to_desc(irq);
 	if (!desc) {
-		printk("[%s] %s: irq_to_desc failed", __FILE__, __func__);
+		printk("[%s] %s: irq_to_desc failed irq: %d", __FILE__, __func__, irq);
 		return -EINVAL;
 	}
 

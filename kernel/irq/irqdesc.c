@@ -469,6 +469,8 @@ static int alloc_descs(unsigned int start, unsigned int cnt, int node,
 		       const struct irq_affinity_desc *affinity,
 		       struct module *owner)
 {
+	printk("[%s] %s: start: %d, cnt: %d", __FILE__, __func__, start, cnt);
+	dump_stack();
 	struct irq_desc *desc;
 	int i;
 
@@ -495,6 +497,8 @@ static int alloc_descs(unsigned int start, unsigned int cnt, int node,
 		}
 
 		desc = alloc_desc(start + i, node, flags, mask, owner);
+		printk("[%s] %s: alloc_desc %d, !desc: %d",
+		       __FILE__, __func__, start + i, !desc);
 		if (!desc)
 			goto err;
 		irq_insert_desc(start + i, desc);
