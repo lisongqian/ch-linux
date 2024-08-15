@@ -691,6 +691,7 @@ module_param_named(queue_depth, virtblk_queue_depth, uint, 0444);
 
 static int virtblk_probe(struct virtio_device *vdev)
 {
+	printk("[%s] %s: start",__FILE__, __func__);
 	struct virtio_blk *vblk;
 	struct request_queue *q;
 	int err, index;
@@ -703,11 +704,13 @@ static int virtblk_probe(struct virtio_device *vdev)
 	if (!vdev->config->get) {
 		dev_err(&vdev->dev, "%s failure: config access disabled\n",
 			__func__);
+		printk("[%s] %s: failure: config access disabled", __FILE__, __func__);
 		return -EINVAL;
 	}
 
 	err = ida_simple_get(&vd_index_ida, 0, minor_to_index(1 << MINORBITS),
 			     GFP_KERNEL);
+	printk("[%s] %s: ida_simple_get result: %d", __FILE__, __func__, err);
 	if (err < 0)
 		goto out;
 	index = err;
@@ -742,6 +745,7 @@ static int virtblk_probe(struct virtio_device *vdev)
 	INIT_WORK(&vblk->config_work, virtblk_config_changed_work);
 
 	err = init_vq(vblk);
+	printk("[%s] %s: init_vq result: %d", __FILE__, __func__, err);
 	if (err)
 		goto out_free_vblk;
 
@@ -767,12 +771,14 @@ static int virtblk_probe(struct virtio_device *vdev)
 	vblk->tag_set.nr_hw_queues = vblk->num_vqs;
 
 	err = blk_mq_alloc_tag_set(&vblk->tag_set);
+	printk("[%s] %s: blk_mq_alloc_tag_set result: %d", __FILE__, __func__, err);
 	if (err)
 		goto out_free_vq;
 
 	vblk->disk = blk_mq_alloc_disk(&vblk->tag_set, vblk);
 	if (IS_ERR(vblk->disk)) {
 		err = PTR_ERR(vblk->disk);
+		printk("[%s] %s: blk_mq_alloc_disk result: %d", __FILE__, __func__, err);
 		goto out_free_tags;
 	}
 	q = vblk->disk->queue;
@@ -876,6 +882,7 @@ static int virtblk_probe(struct virtio_device *vdev)
 	virtio_device_ready(vdev);
 
 	err = device_add_disk(&vdev->dev, vblk->disk, virtblk_attr_groups);
+	printk("[%s] %s: device_add_disk result: %d", __FILE__, __func__, err);
 	if (err)
 		goto out_cleanup_disk;
 

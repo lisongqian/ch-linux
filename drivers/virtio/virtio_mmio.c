@@ -463,6 +463,7 @@ static int vm_find_vqs(struct virtio_device *vdev,	// 当前要操作的设备
 		       const bool *ctx,
 		       struct irq_affinity *desc)
 {
+	printk("[%s] %s: start", __FILE__, __func__);
 	struct virtio_mmio_device *vm_dev = to_virtio_mmio_device(vdev);
 	int irq = platform_get_irq(vm_dev->pdev, 0);
 	int i, err, queue_idx = 0;
@@ -472,6 +473,7 @@ static int vm_find_vqs(struct virtio_device *vdev,	// 当前要操作的设备
 
 	err = request_irq(irq, vm_interrupt, IRQF_SHARED,
 			dev_name(&vdev->dev), vm_dev);
+	printk("[%s] %s: request_irq result: %d", __FILE__, __func__, err);
 	if (err)
 		return err;
 
@@ -485,6 +487,7 @@ static int vm_find_vqs(struct virtio_device *vdev,	// 当前要操作的设备
 				     ctx ? ctx[i] : false);
 		if (IS_ERR(vqs[i])) {
 			vm_del_vqs(vdev);
+			printk("[%s] %s: vm_setup_vq result: %d", __FILE__, __func__, err);
 			return PTR_ERR(vqs[i]);
 		}
 	}
@@ -559,6 +562,7 @@ static void virtio_mmio_release_dev(struct device *_d)
 
 static int virtio_mmio_probe(struct platform_device *pdev)
 {
+	printk("[virtio_mmio] virtio_mmio_probe: start");
 	struct virtio_mmio_device *vm_dev;
 	unsigned long magic;
 	int rc;

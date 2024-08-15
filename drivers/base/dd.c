@@ -511,11 +511,14 @@ static int call_driver_probe(struct device *dev, struct device_driver *drv)
 {
 	int ret = 0;
 
-	if (dev->bus->probe)
+	if (dev->bus->probe) {
+		printk("[%s] %s: dev->bus->probe", __FILE__, __func__);
 		ret = dev->bus->probe(dev);
-	else if (drv->probe)
+	}
+	else if (drv->probe) {
+		printk("[%s] %s: drv->probe", __FILE__, __func__);
 		ret = drv->probe(dev);
-
+	}
 	switch (ret) {
 	case 0:
 		break;
@@ -542,6 +545,7 @@ static int call_driver_probe(struct device *dev, struct device_driver *drv)
 
 static int really_probe(struct device *dev, struct device_driver *drv)
 {
+	printk("[%s] %s: start",__FILE__, __func__);
 	bool test_remove = IS_ENABLED(CONFIG_DEBUG_TEST_DRIVER_REMOVE) &&
 			   !drv->suppress_bind_attrs;
 	int ret;

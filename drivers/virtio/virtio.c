@@ -271,6 +271,7 @@ static int virtio_dev_probe(struct device *_d)
 		goto err;
 
 	err = drv->probe(dev);
+	printk("[%s] %s: drv->probe result: %d",__FILE__, __func__, err);
 	if (err)
 		goto err;
 
@@ -385,6 +386,7 @@ out:
  */
 int register_virtio_device(struct virtio_device *dev)
 {
+	printk("[virtio] register_virtio_device: start");
 	int err;
 
 	dev->dev.bus = &virtio_bus;
@@ -399,6 +401,7 @@ int register_virtio_device(struct virtio_device *dev)
 	dev_set_name(&dev->dev, "virtio%u", dev->index);
 
 	err = virtio_device_of_init(dev);
+	printk("[virtio] register_virtio_device: virtio_device_of_init result: %d",err);
 	if (err)
 		goto out_ida_remove;
 
@@ -423,7 +426,8 @@ int register_virtio_device(struct virtio_device *dev)
 	err = device_add(&dev->dev);
 	if (err)
 		goto out_of_node_put;
-	printk("Register virtio device: %s, bus: %s.", dev_name(&dev->dev), dev_bus_name(&dev->dev));
+	printk("[virtio] register_virtio_device: Register virtio device: %s, bus: %s.",
+	       dev_name(&dev->dev), dev_bus_name(&dev->dev));
 	dump_stack();
 	return 0;
 

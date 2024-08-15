@@ -87,6 +87,7 @@ static void virtio_cleanup(struct hwrng *rng)
 
 static int probe_common(struct virtio_device *vdev)
 {
+	printk("[%s] %s: start",__FILE__, __func__);
 	int err, index;
 	struct virtrng_info *vi = NULL;
 
@@ -97,6 +98,7 @@ static int probe_common(struct virtio_device *vdev)
 	vi->index = index = ida_simple_get(&rng_index_ida, 0, 0, GFP_KERNEL);
 	if (index < 0) {
 		err = index;
+		printk("[%s] %s: ida_simple_get result: %d", __FILE__, __func__, err);
 		goto err_ida;
 	}
 	sprintf(vi->name, "virtio_rng.%d", index);
@@ -115,6 +117,7 @@ static int probe_common(struct virtio_device *vdev)
 	vi->vq = virtio_find_single_vq(vdev, random_recv_done, "input");
 	if (IS_ERR(vi->vq)) {
 		err = PTR_ERR(vi->vq);
+		printk("[%s] %s: virtio_find_single_vq result: %d", __FILE__, __func__, err);
 		goto err_find;
 	}
 
