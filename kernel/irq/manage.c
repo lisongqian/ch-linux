@@ -2136,16 +2136,22 @@ int request_threaded_irq(unsigned int irq, irq_handler_t handler,
 	if (((irqflags & IRQF_SHARED) && !dev_id) ||
 	    ((irqflags & IRQF_SHARED) && (irqflags & IRQF_NO_AUTOEN)) ||
 	    (!(irqflags & IRQF_SHARED) && (irqflags & IRQF_COND_SUSPEND)) ||
-	    ((irqflags & IRQF_NO_SUSPEND) && (irqflags & IRQF_COND_SUSPEND)))
+	    ((irqflags & IRQF_NO_SUSPEND) && (irqflags & IRQF_COND_SUSPEND))){
+		printk("[%s] %s: irqflags check failed", __FILE__, __func__);
 		return -EINVAL;
+	}
 
 	desc = irq_to_desc(irq);
-	if (!desc)
+	if (!desc) {
+		printk("[%s] %s: irq_to_desc failed", __FILE__, __func__);
 		return -EINVAL;
+	}
 
 	if (!irq_settings_can_request(desc) ||
-	    WARN_ON(irq_settings_is_per_cpu_devid(desc)))
+	    WARN_ON(irq_settings_is_per_cpu_devid(desc))) {
+		printk("[%s] %s: irq_settings_can_request failed", __FILE__, __func__);
 		return -EINVAL;
+	}
 
 	if (!handler) {
 		if (!thread_fn)
